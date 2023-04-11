@@ -20,13 +20,12 @@ class Level:
     def setup(self):
         Generic(pos=(0, 0), surface=GROUND, groups=self.all_sprites)
         self.soil_layer = SoilLayer(self.all_sprites)
-        self.plant_layer = PlantLayer(self.all_sprites)
+        self.plant_layer = PlantLayer(self.all_sprites, self.soil_layer)
         self.player = Player(PLAYER_SPAWN_LOC, self.all_sprites, self.soil_layer, self.plant_layer, self.all_sprites.offset)
         self.overlay = Overlay(self.player.selected_tool)
 
     def run(self, dt):
         self.display_surface.fill('blue')
-        # self.all_sprites.draw(self.display_surface)
         self.all_sprites.custom_draw(self.player)
         self.overlay.update(self.player.selected_tool)
         self.overlay.draw(self.display_surface)

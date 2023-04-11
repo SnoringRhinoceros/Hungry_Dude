@@ -58,10 +58,6 @@ class SoilTile(Generic):
         if self.state == SoilStates.TILLED:
             self.state = SoilStates.WATERED
 
-    def plant(self):
-        if self.state == SoilStates.WATERED:
-            self.state = SoilStates.PLANT
-
     def update(self, dt):
         if self.state == SoilStates.NORMAL:
             self.image = self.normal_surface

@@ -57,8 +57,7 @@ class Player(pygame.sprite.Sprite):
                 elif self.selected_tool == 'water':
                     self.soil_layer.grid[collided_tile_index[0]][collided_tile_index[1]][0].water()
                 elif self.selected_tool == 'seeds':
-                    self.soil_layer.grid[collided_tile_index[0]][collided_tile_index[1]][0].plant()
-                    if self.soil_layer.grid[collided_tile_index[0]][collided_tile_index[1]][0].state == SoilStates.PLANT:
+                    if self.soil_layer.grid[collided_tile_index[0]][collided_tile_index[1]][0].state == SoilStates.WATERED:
                         self.plant_layer.plant((collided_tile_index[0], collided_tile_index[1]), 'corn')
 
     def check_selectable(self, collided_tile_pos):

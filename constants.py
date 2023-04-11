@@ -32,7 +32,7 @@ OVERLAY_SLOT_MIDDLE_WIDTH = 44
 OVERLAY_SLOT_SIDE_LENGTH = 32
 
 PLANT_IMAGES = [pygame.image.load(Path('graphics/crops/corn/' + f)) for f in os.listdir(Path('graphics/crops/corn')) if not f == 'Thumbs.db']
-PLANT_GROW_SPEED = 1000
+PLANT_GROW_SPEED = 10000
 
 
 class CornStates(IntEnum):
