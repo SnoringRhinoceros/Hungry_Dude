@@ -33,30 +33,30 @@ class Plant(Generic):
     def __init__(self, soil_tile, all_sprites, breed):
         self.breed = breed
         self.soil_tile = soil_tile
-        print(self.soil_tile)
+        self.pos = self.soil_tile.pos
         self.state = CornStates.SEED
         self.has_water = True
         self.timer = Timer(PLANT_GROW_SPEED, self.change_state)
-        self.image = PLANT_IMAGES[self.state-1]
-        super().__init__(pos=self.soil_tile.pos, surface=self.image, groups=all_sprites)
+        self.image = PLANT_IMAGES[self.state.value-1]
+        super().__init__(pos=self.pos, surface=self.image, groups=all_sprites)
         self.timer.activate()
 
     def change_state(self):
+        print(self.state, self.state.value)
         if self.state is not CornStates.ADULT:
             if self.has_water:
                 self.has_water = False
-                self.state = self.state + 1
+                self.state = CornStates(self.state.value+1)
                 self.timer = Timer(PLANT_GROW_SPEED, self.change_state)
                 self.soil_tile.state = SoilStates.TILLED
                 self.timer.activate()
-        else:
-            del self
 
     def update(self, dt):
+        print(self.state)
         self.timer.update()
         if self.soil_tile.state == SoilStates.WATERED:
             self.has_water = True
         else:
             self.has_water = False
-        self.image = PLANT_IMAGES[self.state-1]
-        self.rect = self.image.get_rect()
+        self.image = PLANT_IMAGES[self.state.value-1]
+        self.rect = self.image.get_rect(topleft=self.pos)
