@@ -27,10 +27,18 @@ class PlantLayer:
         if not self.grid[index_pos[0]][index_pos[1]]:
             self.grid[index_pos[0]][index_pos[1]].append(Plant(self.soil_layer.grid[index_pos[0]][index_pos[1]][0],
                                                                self.all_sprites, breed))
+    def update(self):
+        for col in self.grid:
+            for row in col:
+                if row and row[0].marked_for_deletion:
+                    print('happened')
+                    row[0].kill()
+                    row.pop(0)
 
 
 class Plant(Generic):
     def __init__(self, soil_tile, all_sprites, breed):
+        self.marked_for_deletion = False
         self.breed = breed
         self.soil_tile = soil_tile
         self.pos = self.soil_tile.pos
@@ -42,17 +50,18 @@ class Plant(Generic):
         self.timer.activate()
 
     def change_state(self):
-        print(self.state, self.state.value)
-        if self.state is not CornStates.ADULT:
-            if self.has_water:
-                self.has_water = False
+        if self.has_water:
+            self.has_water = False
+            if self.state is not CornStates.ADULT:
                 self.state = CornStates(self.state.value+1)
-                self.timer = Timer(PLANT_GROW_SPEED, self.change_state)
-                self.soil_tile.state = SoilStates.TILLED
-                self.timer.activate()
+            self.timer = Timer(PLANT_GROW_SPEED, self.change_state)
+            self.soil_tile.state = SoilStates.TILLED
+            self.timer.activate()
+
+        else:
+            self.marked_for_deletion = True
 
     def update(self, dt):
-        print(self.state)
         self.timer.update()
         if self.soil_tile.state == SoilStates.WATERED:
             self.has_water = True

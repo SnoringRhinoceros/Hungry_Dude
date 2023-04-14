@@ -16,7 +16,8 @@ class Overlay:
         self.selected_tool = selected_tool
 
     def draw(self, surface):
-        # Image order: [background.png, hoe.png seeds.png, water.png] (alphabetical)
+        # Image order: ['background.png', 'hoe.png', 'seeds.png', 'water.png', 'wheat.png', 'wheat_pressed.png']
+        # (alphabetical)
         self.images = []
         for i in range(len(self.unselected_images)):
             if not self.image_names[i] == self.selected_tool+'.png':
@@ -28,6 +29,7 @@ class Overlay:
         self.rects[1].x, self.rects[1].y = self.pos[0]+OVERLAY_SLOT_SIDE_WIDTH, self.pos[1]+OVERLAY_SLOT_SIDE_LENGTH
         self.rects[3].x, self.rects[3].y = self.pos[0]+OVERLAY_SLOT_SIDE_WIDTH+TILE_SIZE+OVERLAY_SLOT_MIDDLE_WIDTH, self.pos[1]+OVERLAY_SLOT_SIDE_LENGTH
         self.rects[2].x, self.rects[2].y = self.pos[0]+OVERLAY_SLOT_SIDE_WIDTH+TILE_SIZE+OVERLAY_SLOT_MIDDLE_WIDTH+TILE_SIZE+OVERLAY_SLOT_MIDDLE_WIDTH, self.pos[1]+OVERLAY_SLOT_SIDE_LENGTH
+        self.rects[4].x, self.rects[4].y = self.pos[0]+OVERLAY_SLOT_SIDE_WIDTH+TILE_SIZE+OVERLAY_SLOT_MIDDLE_WIDTH+TILE_SIZE+OVERLAY_SLOT_MIDDLE_WIDTH+TILE_SIZE+OVERLAY_SLOT_MIDDLE_WIDTH, self.pos[1]+OVERLAY_SLOT_SIDE_LENGTH
 
         for i in range(len(self.images)):
             surface.blit(self.images[i], self.rects[i])

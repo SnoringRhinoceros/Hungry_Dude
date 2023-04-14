@@ -30,6 +30,7 @@ class Level:
         self.overlay.update(self.player.selected_tool)
         self.overlay.draw(self.display_surface)
         self.player.camera_offset = self.all_sprites.offset
+        self.plant_layer.update()
         self.all_sprites.update(dt)
         self.player.mouse.update(self.all_sprites.offset)
 

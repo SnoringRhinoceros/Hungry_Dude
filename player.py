@@ -24,7 +24,7 @@ class Player(pygame.sprite.Sprite):
         self.feet_pos = self.pos[0], self.pos[1] + (self.rect.height//2)-28
         self.surrounding_tiles = []
 
-        self.tools = ['hoe', 'water', 'seeds']
+        self.tools = ['hoe', 'water', 'seeds', 'wheat']
         self.tool_index = 0
         self.selected_tool = self.tools[self.tool_index]
 
