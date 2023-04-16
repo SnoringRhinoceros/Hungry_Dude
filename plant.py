@@ -27,11 +27,11 @@ class PlantLayer:
         if not self.grid[index_pos[0]][index_pos[1]]:
             self.grid[index_pos[0]][index_pos[1]].append(Plant(self.soil_layer.grid[index_pos[0]][index_pos[1]][0],
                                                                self.all_sprites, breed))
+
     def update(self):
         for col in self.grid:
             for row in col:
                 if row and row[0].marked_for_deletion:
-                    print('happened')
                     row[0].kill()
                     row.pop(0)
 

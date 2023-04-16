@@ -15,7 +15,7 @@ class Overlay:
         self.rects = []
         self.selected_tool = selected_tool
 
-    def draw(self, surface):
+    def draw(self, surface, tool_num):
         # Image order: ['background.png', 'hoe.png', 'seeds.png', 'water.png', 'wheat.png', 'wheat_pressed.png']
         # (alphabetical)
         self.images = []

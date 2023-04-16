@@ -28,7 +28,7 @@ class Level:
         self.display_surface.fill('blue')
         self.all_sprites.custom_draw(self.player)
         self.overlay.update(self.player.selected_tool)
-        self.overlay.draw(self.display_surface)
+        self.overlay.draw(self.display_surface, self.player.tool_num)
         self.player.camera_offset = self.all_sprites.offset
         self.plant_layer.update()
         self.all_sprites.update(dt)

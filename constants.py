@@ -30,6 +30,7 @@ OVERLAY_WIDTH = 128
 OVERLAY_SLOT_SIDE_WIDTH = 20
 OVERLAY_SLOT_MIDDLE_WIDTH = 44
 OVERLAY_SLOT_SIDE_LENGTH = 32
+OVERLAY_FONT = pygame.font.Font('freesansbold.tff', 15)
 
 PLANT_IMAGES = [pygame.image.load(Path('graphics/crops/corn/' + f)) for f in os.listdir(Path('graphics/crops/corn')) if not f == 'Thumbs.db']
 PLANT_GROW_SPEED = 5000

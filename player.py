@@ -25,6 +25,7 @@ class Player(pygame.sprite.Sprite):
         self.surrounding_tiles = []
 
         self.tools = ['hoe', 'water', 'seeds', 'wheat']
+        self.tool_num = [None, None, 0, 0]
         self.tool_index = 0
         self.selected_tool = self.tools[self.tool_index]
 
@@ -52,7 +53,7 @@ class Player(pygame.sprite.Sprite):
                         self.status = 'up_' + self.status.split('_')[1]
 
             if self.check_selectable(collided_tile_pos):
-                if self.selected_tool == 'hoe':
+                if self.selected_tool == 'hoe' and not self.plant_layer.grid[collided_tile_index[0]][collided_tile_index[1]]:
                     self.soil_layer.grid[collided_tile_index[0]][collided_tile_index[1]][0].till()
                 elif self.selected_tool == 'water':
                     self.soil_layer.grid[collided_tile_index[0]][collided_tile_index[1]][0].water()
