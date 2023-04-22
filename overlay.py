@@ -30,9 +30,22 @@ class Overlay:
         self.rects[3].x, self.rects[3].y = self.pos[0]+OVERLAY_SLOT_SIDE_WIDTH+TILE_SIZE+OVERLAY_SLOT_MIDDLE_WIDTH, self.pos[1]+OVERLAY_SLOT_SIDE_LENGTH
         self.rects[2].x, self.rects[2].y = self.pos[0]+OVERLAY_SLOT_SIDE_WIDTH+TILE_SIZE+OVERLAY_SLOT_MIDDLE_WIDTH+TILE_SIZE+OVERLAY_SLOT_MIDDLE_WIDTH, self.pos[1]+OVERLAY_SLOT_SIDE_LENGTH
         self.rects[4].x, self.rects[4].y = self.pos[0]+OVERLAY_SLOT_SIDE_WIDTH+TILE_SIZE+OVERLAY_SLOT_MIDDLE_WIDTH+TILE_SIZE+OVERLAY_SLOT_MIDDLE_WIDTH+TILE_SIZE+OVERLAY_SLOT_MIDDLE_WIDTH, self.pos[1]+OVERLAY_SLOT_SIDE_LENGTH
+        tool_num_indexes_to_draw = [i for i in range(len(tool_num)) if tool_num[i] is not None]
+        tool_num_text = [OVERLAY_FONT.render(str(i), True, BLACK) for i in tool_num if tool_num is not None]
+        tool_num_text_rects = [i.get_rect() for i in tool_num_text]
+        for i in range(len(tool_num_text_rects)):
+            if i+1 == 2:
+                tool_num_text_rects[i].x, tool_num_text_rects[i].y = self.rects[i+2].x+OVERLAY_TEXT_OFFSET, self.rects[i+2].y+OVERLAY_TEXT_OFFSET
+            elif i+1 == 3:
+                tool_num_text_rects[i].x, tool_num_text_rects[i].y = self.rects[i].x + OVERLAY_TEXT_OFFSET, self.rects[i].y + OVERLAY_TEXT_OFFSET
+            else:
+                tool_num_text_rects[i].x, tool_num_text_rects[i].y = self.rects[i+1].x+OVERLAY_TEXT_OFFSET, self.rects[i+1].y+OVERLAY_TEXT_OFFSET
 
         for i in range(len(self.images)):
             surface.blit(self.images[i], self.rects[i])
+        for i in range(len(tool_num_text)):
+            if i in tool_num_indexes_to_draw:
+                surface.blit(tool_num_text[i], tool_num_text_rects[i])
 
     def update(self, selected_tool):
         self.selected_tool = selected_tool

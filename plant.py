@@ -2,6 +2,7 @@ import pygame
 from constants import *
 from timer import Timer
 from sprites import Generic
+import random
 
 
 class PlantLayer:
@@ -19,7 +20,6 @@ class PlantLayer:
         for col in range(horiz_tiles):
             current_row = []
             for row in range(verti_tiles):
-                # soil_tile = Plant((col * TILE_SIZE, row * TILE_SIZE), Timer(PLANT_GROW_SPEED), self.all_sprites)
                 current_row.append([])
             self.grid.append(current_row)
 
@@ -34,6 +34,9 @@ class PlantLayer:
                 if row and row[0].marked_for_deletion:
                     row[0].kill()
                     row.pop(0)
+                elif not row and random.randint(0, 1000000) == 69:
+                    print(self.grid.index(col), col.index(row))
+                    row.append(Seed(self.soil_layer.grid[self.grid.index(col)][col.index(row)], self.all_sprites))
 
 
 class Plant(Generic):
@@ -69,3 +72,16 @@ class Plant(Generic):
             self.has_water = False
         self.image = PLANT_IMAGES[self.state.value-1]
         self.rect = self.image.get_rect(topleft=self.pos)
+
+
+class Seed(Generic):
+    def __init__(self, soil_tile, all_sprites):
+        self.marked_for_deletion = False
+        self.soil_tile = soil_tile
+        self.pos = self.soil_tile.pos
+        self.image = PLANT_IMAGES[2]
+        self.timer = Timer(SEED_DEATH_TIME, self.mark_for_deletion())
+        super.__init__(pos=self.pos, surface=self.image, groups=all_sprites)
+
+    def mark_for_deletion(self):
+        self.marked_for_deletion = True

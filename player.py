@@ -52,14 +52,17 @@ class Player(pygame.sprite.Sprite):
                     elif self.surrounding_tiles.index(i) == 3:
                         self.status = 'up_' + self.status.split('_')[1]
 
+            # Tool order ['hoe', 'water', 'seeds', 'wheat']
             if self.check_selectable(collided_tile_pos):
-                if self.selected_tool == 'hoe' and not self.plant_layer.grid[collided_tile_index[0]][collided_tile_index[1]]:
-                    self.soil_layer.grid[collided_tile_index[0]][collided_tile_index[1]][0].till()
-                elif self.selected_tool == 'water':
-                    self.soil_layer.grid[collided_tile_index[0]][collided_tile_index[1]][0].water()
-                elif self.selected_tool == 'seeds':
-                    if self.soil_layer.grid[collided_tile_index[0]][collided_tile_index[1]][0].state == SoilStates.WATERED:
-                        self.plant_layer.plant((collided_tile_index[0], collided_tile_index[1]), 'corn')
+                if self.tool_num[self.tools.index(self.selected_tool)] is None or self.tool_num[self.tools.index(self.selected_tool)] > 0:
+                    if self.selected_tool == 'hoe' and not self.plant_layer.grid[collided_tile_index[0]][collided_tile_index[1]]:
+                        self.soil_layer.grid[collided_tile_index[0]][collided_tile_index[1]][0].till()
+                    elif self.selected_tool == 'water':
+                        self.soil_layer.grid[collided_tile_index[0]][collided_tile_index[1]][0].water()
+                    elif self.selected_tool == 'seeds':
+                        if self.soil_layer.grid[collided_tile_index[0]][collided_tile_index[1]][0].state == SoilStates.WATERED:
+                            self.plant_layer.plant((collided_tile_index[0], collided_tile_index[1]), 'corn')
+                        self.tool_num[2] -= 1
 
     def check_selectable(self, collided_tile_pos):
         return (collided_tile_pos[0] + TILE_SIZE > self.mouse.pos[0] > collided_tile_pos[0]) and (

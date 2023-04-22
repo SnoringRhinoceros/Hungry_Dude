@@ -4,6 +4,8 @@ import pygame
 from pathlib import Path
 import os
 
+BLACK = (0, 0, 0)
+
 PLAYER_SPAWN_LOC = (640, 360)
 PLAYER_SPEED = 400
 PLAYER_HITBOX_X = 0.6
@@ -30,10 +32,13 @@ OVERLAY_WIDTH = 128
 OVERLAY_SLOT_SIDE_WIDTH = 20
 OVERLAY_SLOT_MIDDLE_WIDTH = 44
 OVERLAY_SLOT_SIDE_LENGTH = 32
-OVERLAY_FONT = pygame.font.Font('freesansbold.tff', 15)
+pygame.font.init()
+OVERLAY_FONT = pygame.font.SysFont('Georgia.tff', 15)
+OVERLAY_TEXT_OFFSET = 45
 
 PLANT_IMAGES = [pygame.image.load(Path('graphics/crops/corn/' + f)) for f in os.listdir(Path('graphics/crops/corn')) if not f == 'Thumbs.db']
 PLANT_GROW_SPEED = 5000
+SEED_DEATH_TIME = 10000
 
 
 class CornStates(Enum):
