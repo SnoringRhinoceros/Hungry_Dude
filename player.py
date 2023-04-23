@@ -23,6 +23,7 @@ class Player(pygame.sprite.Sprite):
         self.speed = PLAYER_SPEED
         self.feet_pos = self.pos[0], self.pos[1] + (self.rect.height//2)-28
         self.surrounding_tiles = []
+        self.hunger_level = 3
 
         self.tools = ['hoe', 'water', 'seeds', 'wheat']
         self.tool_num = [None, None, 0, 0]
@@ -142,6 +143,15 @@ class Player(pygame.sprite.Sprite):
         if self.timers['tool_use'].active:
             self.status = self.status.split('_')[0] + '_' + self.selected_tool
 
+    def check_collision(self):
+        collided_tile = self.soil_layer.tile_collision(self.feet_pos, ShapeTypes.POINT)[0]
+        collided_tile = collided_tile[0] // TILE_SIZE, collided_tile[1] // TILE_SIZE
+        if collided_tile is not None:
+            if self.plant_layer.grid[collided_tile[0]][collided_tile[1]]:
+                if self.plant_layer.grid[collided_tile[0]][collided_tile[1]][0].object_type == ObjectTypes.SEED:
+                    self.tool_num[2] += 1
+                    self.plant_layer.grid[collided_tile[0]][collided_tile[1]][0].mark_for_deletion()
+
     def update_timers(self):
         for timer in self.timers.values():
             timer.update()
@@ -171,6 +181,7 @@ class Player(pygame.sprite.Sprite):
     def update(self, dt):
         self.input()
         self.get_status()
+        self.check_collision()
         self.update_timers()
         self.move(dt)
         self.animate(dt)

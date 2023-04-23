@@ -29,14 +29,15 @@ class PlantLayer:
                                                                self.all_sprites, breed))
 
     def update(self):
-        for col in self.grid:
-            for row in col:
-                if row and row[0].marked_for_deletion:
-                    row[0].kill()
-                    row.pop(0)
-                elif not row and random.randint(0, 1000000) == 69:
-                    print(self.grid.index(col), col.index(row))
-                    row.append(Seed(self.soil_layer.grid[self.grid.index(col)][col.index(row)], self.all_sprites))
+        for col in range(len(self.grid)):
+            for row in range(len(self.grid[col])):
+                if self.grid[col][row] and self.grid[col][row][0].marked_for_deletion:
+                    self.grid[col][row][0].kill()
+                    self.grid[col][row].pop(0)
+                else:
+                    random_num = random.randint(0, 1000000)
+                    if not self.grid[col][row] and self.soil_layer.grid[col][row][0].state == SoilStates.NORMAL and random_num == 69:
+                        self.grid[col][row].append(Seed(self.soil_layer.grid[col][row][0], self.all_sprites))
 
 
 class Plant(Generic):
@@ -49,6 +50,7 @@ class Plant(Generic):
         self.has_water = True
         self.timer = Timer(PLANT_GROW_SPEED, self.change_state)
         self.image = PLANT_IMAGES[self.state.value-1]
+        self.object_type = ObjectTypes.PLANT
         super().__init__(pos=self.pos, surface=self.image, groups=all_sprites)
         self.timer.activate()
 
@@ -79,9 +81,16 @@ class Seed(Generic):
         self.marked_for_deletion = False
         self.soil_tile = soil_tile
         self.pos = self.soil_tile.pos
-        self.image = PLANT_IMAGES[2]
-        self.timer = Timer(SEED_DEATH_TIME, self.mark_for_deletion())
-        super.__init__(pos=self.pos, surface=self.image, groups=all_sprites)
+        print('a seed spawned at', self.pos)
+        self.image = SEED_IMAGE
+        self.rect = self.image.get_rect(topleft=self.pos)
+        self.timer = Timer(SEED_DEATH_TIME, self.mark_for_deletion)
+        self.object_type = ObjectTypes.SEED
+        super().__init__(pos=self.pos, surface=self.image, groups=all_sprites)
+        self.timer.activate()
 
     def mark_for_deletion(self):
         self.marked_for_deletion = True
+
+    def update(self, dt):
+        self.timer.update()
