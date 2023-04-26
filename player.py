@@ -10,6 +10,7 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, pos, group, soil_layer, plant_layer, camera_offset):
         super().__init__(group)
 
+        self.game_over = False
         self.animations = None
         self.import_assets()
         self.status = 'down_idle'
@@ -23,14 +24,15 @@ class Player(pygame.sprite.Sprite):
         self.speed = PLAYER_SPEED
         self.feet_pos = self.pos[0], self.pos[1] + (self.rect.height//2)-28
         self.surrounding_tiles = []
-        self.hunger_level = 3
+        self.hunger_level = 5
 
         self.tools = ['hoe', 'water', 'seeds', 'wheat']
         self.tool_num = [None, None, 0, 0]
         self.tool_index = 0
         self.selected_tool = self.tools[self.tool_index]
 
-        self.timers = {'tool_use': Timer(350, self.use_tool), 'tool_switch': Timer(200)}
+        self.timers = {'tool_use': Timer(350, self.use_tool), 'tool_switch': Timer(200), 'hunger_bar': Timer(HUNGER_BAR_TICK_TIME, self.hunger_bar_tick)}
+        self.timers['hunger_bar'].activate()
 
         self.soil_layer = soil_layer
         self.plant_layer = plant_layer
@@ -63,7 +65,7 @@ class Player(pygame.sprite.Sprite):
                     elif self.selected_tool == 'seeds':
                         if self.soil_layer.grid[collided_tile_index[0]][collided_tile_index[1]][0].state == SoilStates.WATERED:
                             self.plant_layer.plant((collided_tile_index[0], collided_tile_index[1]), 'corn')
-                        self.tool_num[2] -= 1
+                            self.tool_num[2] -= 1
 
     def check_selectable(self, collided_tile_pos):
         return (collided_tile_pos[0] + TILE_SIZE > self.mouse.pos[0] > collided_tile_pos[0]) and (
@@ -151,6 +153,16 @@ class Player(pygame.sprite.Sprite):
                 if self.plant_layer.grid[collided_tile[0]][collided_tile[1]][0].object_type == ObjectTypes.SEED:
                     self.tool_num[2] += 1
                     self.plant_layer.grid[collided_tile[0]][collided_tile[1]][0].mark_for_deletion()
+
+    def hunger_bar_tick(self):
+        if self.hunger_level >= 1:
+            self.hunger_level -= 1
+            if self.hunger_level == 0:
+                print('you lose :(')
+                self.game_over = True
+            else:
+                self.timers['hunger_bar'] = Timer(HUNGER_BAR_TICK_TIME, self.hunger_bar_tick)
+                self.timers['hunger_bar'].activate()
 
     def update_timers(self):
         for timer in self.timers.values():

@@ -41,11 +41,14 @@ OVERLAY_HUNGER_BAR_EMPTY_IMAGE = pygame.image.load(Path('graphics/overlay/hunger
 OVERLAY_HUNGER_BAR_POS = OVERLAY_INVENTORY_POS[0], OVERLAY_INVENTORY_POS[1]-64
 OVERLAY_HUNGER_BAR_TOTAL = 5
 OVERLAY_HUNGER_BAR_IMAGE_DISTANCE = 69
+HUNGER_BAR_TICK_TIME = 5000
 
 PLANT_IMAGES = [pygame.image.load(Path('graphics/crops/corn/' + f)) for f in os.listdir(Path('graphics/crops/corn')) if not f == 'Thumbs.db']
 PLANT_GROW_SPEED = 5000
 SEED_IMAGE = pygame.image.load(Path('graphics/objects/seeds.png'))
 SEED_DEATH_TIME = 10000
+
+END_SCREEN_IMAGE = pygame.image.load(Path('graphics/end_screen/end_screen.png'))
 
 
 class ObjectTypes(Enum):
