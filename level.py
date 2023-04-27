@@ -41,6 +41,7 @@ class Level:
             self.all_sprites.update(dt)
             self.player.mouse.update(self.all_sprites.offset)
             self.global_timer.update(dt)
+            self.global_timer.draw(self.display_surface)
         else:
             self.display_surface.blit(END_SCREEN_IMAGE, END_SCREEN_IMAGE.get_rect())
 
