@@ -27,7 +27,7 @@ class Level:
         self.player = Player(PLAYER_SPAWN_LOC, self.all_sprites, self.soil_layer, self.plant_layer, self.all_sprites.offset)
         self.inventory = Inventory(self.player.selected_tool)
         self.hunger_bar = HungerBar()
-        self.global_timer = GlobalTimer()
+        self.global_timer = GlobalTimer(GLOBAL_TIMER_POS)
 
     def run(self, dt):
         if not self.check_end_con():
@@ -40,7 +40,7 @@ class Level:
             self.plant_layer.update()
             self.all_sprites.update(dt)
             self.player.mouse.update(self.all_sprites.offset)
-            self.global_timer.update()
+            self.global_timer.update(dt)
         else:
             self.display_surface.blit(END_SCREEN_IMAGE, END_SCREEN_IMAGE.get_rect())
 

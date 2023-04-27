@@ -23,6 +23,10 @@ TILLED_SURFACE = pygame.image.load(Path('graphics/soil/soil.png'))
 NORMAL_SURFACE = pygame.image.load(Path('graphics/soil/transparent.png'))
 WATERED_SURFACE = pygame.image.load(Path('graphics/soil/watered_soil.png'))
 
+GLOBAL_TIMER_POS = (100, 100)
+pygame.font.init()
+GLOBAL_TIMER_FONT = pygame.font.SysFont('system_bold.tff', 30)
+
 OVERLAY_INVENTORY_SELECTED_IMAGES = [pygame.image.load(Path('graphics/overlay/inventory/' + f)) for f in os.listdir(Path('graphics/overlay/inventory')) if not f == 'Thumbs.db' and 'selected' in f]
 OVERLAY_INVENTORY_UNSELECTED_IMAGES = [pygame.image.load(Path('graphics/overlay/inventory/' + f)) for f in os.listdir(Path('graphics/overlay/inventory')) if not f == 'Thumbs.db' and 'selected' not in f]
 OVERLAY_INVENTORY_IMAGE_NAMES = [f for f in os.listdir(Path('graphics/overlay/inventory')) if not f == 'Thumbs.db' and 'selected' not in f]
@@ -32,8 +36,7 @@ OVERLAY_INVENTORY_WIDTH = 128
 OVERLAY_INVENTORY_SLOT_SIDE_WIDTH = 20
 OVERLAY_INVENTORY_SLOT_MIDDLE_WIDTH = 44
 OVERLAY_INVENTORY_SLOT_SIDE_LENGTH = 32
-pygame.font.init()
-OVERLAY_INVENTORY_FONT = pygame.font.SysFont('Georgia.tff', 15)
+OVERLAY_INVENTORY_FONT = pygame.font.SysFont('system_bold.tff', 15)
 OVERLAY_INVENTORY_TEXT_OFFSET = 45
 
 OVERLAY_HUNGER_BAR_FILLED_IMAGE = pygame.image.load(Path('graphics/overlay/hunger_bar/hunger_bar_filled.png'))

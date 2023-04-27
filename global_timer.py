@@ -1,14 +1,23 @@
 from constants import *
-from timer import Timer
+from sprites import Generic
 
 
-class GlobalTimer(Timer):
-    def __init__(self):
-        self.pos = (100, 100)
-        super().__init__(None, None)
-        self.current_time = None
-        self.activate()
+class GlobalTimer(Generic):
+    def __init__(self, pos):
+        self.pos = pos
+        self.starting_time = 0
+        self.current_time = 0
+        self.image = GLOBAL_TIMER_FONT.render(str(self.current_time-self.starting_time), True, BLACK)
+        self.rect = self.image.get_rect()
 
-    def update(self):
+    def activate(self):
+        self.starting_time = pygame.time.get_ticks()
+
+    def update(self, dt):
         self.current_time = pygame.time.get_ticks()
-        print(self.current_time)
+        self.image = GLOBAL_TIMER_FONT.render(str(self.current_time - self.starting_time), True, BLACK)
+        self.rect = self.image.get_rect()
+        print(self.current_time - self.starting_time)
+
+    def draw(self):
+        # make it draw
