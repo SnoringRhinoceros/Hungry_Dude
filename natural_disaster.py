@@ -14,17 +14,20 @@ class NaturalDisaster(Generic):
         Generic.__init__(self, pos=self.pos, surface=self.image, groups=self.all_sprites)
 
     def find_original_direction(self):
-        if self.pos[1] >= # Map.y+Map.height:
+        # Map.y+Map.height
+        if self.pos[1] >= GROUND.get_height():
             self.direction.y = -1
             self.status = 'up'
-        elif self.pos[1] <= # Map.y:
+        # Map.y
+        elif self.pos[1] <= 0:
             self.direction.y = 1
             self.status = 'down'
-
-        if self.pos[0] <= # Map.x:
+        # Map.x
+        if self.pos[0] <= 0:
             self.direction.x = -1
             self.status = 'left'
-        elif self.pos[0] >= # Map.x + Map.width:
+        # Map.x + Map.width
+        elif self.pos[0] >= GROUND.get_width():
             self.direction.x = 1
             self.status = 'right'
 
@@ -39,7 +42,7 @@ class NaturalDisaster(Generic):
         self.rect.centery = self.pos.y
         print((self.rect.centerx, self.rect.centery))
 
-    # Make a check if off screen method
+    # Make sure to make an if off-screen method
 
 
 class Tornado(NaturalDisaster):

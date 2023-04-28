@@ -52,6 +52,9 @@ PLANT_GROW_SPEED = 5000
 SEED_IMAGE = pygame.image.load(Path('graphics/objects/seeds.png'))
 SEED_DEATH_TIME = 10000
 
+TORNADO_SPEED = 100
+TORNADO_IMAGE = pygame.image.load(Path('graphics/natural_disasters/tornado/0.png'))
+
 END_SCREEN_IMAGE = pygame.image.load(Path('graphics/end_screen/end_screen.png'))
 
 
