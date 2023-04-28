@@ -26,6 +26,7 @@ WATERED_SURFACE = pygame.image.load(Path('graphics/soil/watered_soil.png'))
 GLOBAL_TIMER_POS = (100, 100)
 pygame.font.init()
 GLOBAL_TIMER_FONT = pygame.font.SysFont('system_bold.tff', 30)
+GLOBAL_TIMER_BACKGROUND = pygame.image.load(Path('graphics/timer/background.png'))
 
 OVERLAY_INVENTORY_SELECTED_IMAGES = [pygame.image.load(Path('graphics/overlay/inventory/' + f)) for f in os.listdir(Path('graphics/overlay/inventory')) if not f == 'Thumbs.db' and 'selected' in f]
 OVERLAY_INVENTORY_UNSELECTED_IMAGES = [pygame.image.load(Path('graphics/overlay/inventory/' + f)) for f in os.listdir(Path('graphics/overlay/inventory')) if not f == 'Thumbs.db' and 'selected' not in f]
