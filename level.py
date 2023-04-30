@@ -7,7 +7,7 @@ from soil import SoilLayer
 from plant import PlantLayer
 from overlay import *
 from global_timer import GlobalTimer
-from natural_disaster import NaturalDisaster
+from natural_disaster import *
 
 
 class Level:
@@ -20,7 +20,7 @@ class Level:
         self.inventory = None
         self.hunger_bar = None
         self.global_timer = None
-        self.natural_disasters = [NaturalDisaster((0, 0), TORNADO_IMAGE, self.all_sprites, TORNADO_SPEED)]
+        self.natural_disasters = None
 
     def setup(self):
         Generic(pos=(0, 0), surface=GROUND, groups=self.all_sprites)
@@ -30,6 +30,7 @@ class Level:
         self.inventory = Inventory(self.player.selected_tool)
         self.hunger_bar = HungerBar()
         self.global_timer = GlobalTimer(GLOBAL_TIMER_POS)
+        self.natural_disasters = [Tornado(TORNADO_IMAGE, self.all_sprites, TORNADO_SPEED)]
 
     def run(self, dt):
         if not self.check_end_con():

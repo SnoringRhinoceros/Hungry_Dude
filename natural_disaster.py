@@ -3,14 +3,14 @@ from sprites import Generic
 
 
 class NaturalDisaster(Generic):
-    def __init__(self, pos, image, group, speed):
-        self.pos = pos
+    def __init__(self, image, group, speed):
         self.image = image
         self.all_sprites = group
         self.status = None
         self.direction = pygame.math.Vector2()
         self.find_original_direction()
         self.speed = speed
+        self.pos = pygame.math.Vector2(self.rect.center)
         Generic.__init__(self, pos=self.pos, surface=self.image, groups=self.all_sprites)
 
     def find_original_direction(self):
@@ -46,12 +46,13 @@ class NaturalDisaster(Generic):
 
 
 class Tornado(NaturalDisaster):
-    def __init__(self, pos, image, group, speed):
-        NaturalDisaster.__init__(self, pos=pos, image=image, group=group)
+    def __init__(self, image, group, speed):
+        NaturalDisaster.__init__(self, image=image, group=group, speed=speed)
         self.speed = speed
 
-    def update(self):
-        pass
+    def update(self, dt):
+        print('happening')
+        self.move(dt)
     # Pos should be based off of position of the map not of the screen
     # Give TORNADO_SPEED
     # Make the tornado spawn randomly

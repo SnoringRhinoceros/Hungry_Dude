@@ -24,9 +24,9 @@ class GlobalTimer:
             return str(integer)
 
     def print_time(self, milliseconds):
-        seconds = math.floor(milliseconds / 1000)
-        minutes = math.floor(seconds / 60)
-        hours = math.floor(minutes / 60)
+        seconds = math.floor((milliseconds / 1000) % 60)
+        minutes = math.floor((milliseconds / (1000 * 60)) % 60)
+        hours = math.floor((milliseconds / (1000 * 60 * 60)) % 24)
         return self.add_zeros(hours) + ':' + self.add_zeros(minutes) + ':' + self.add_zeros(seconds)
 
     def update(self, dt):

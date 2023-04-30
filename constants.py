@@ -23,7 +23,7 @@ TILLED_SURFACE = pygame.image.load(Path('graphics/soil/soil.png'))
 NORMAL_SURFACE = pygame.image.load(Path('graphics/soil/transparent.png'))
 WATERED_SURFACE = pygame.image.load(Path('graphics/soil/watered_soil.png'))
 
-GLOBAL_TIMER_POS = (100, 100)
+GLOBAL_TIMER_POS = (50, 30)
 pygame.font.init()
 GLOBAL_TIMER_FONT = pygame.font.SysFont('system_bold.tff', 30)
 GLOBAL_TIMER_BACKGROUND = pygame.image.load(Path('graphics/timer/background.png'))

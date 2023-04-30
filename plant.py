@@ -35,7 +35,7 @@ class PlantLayer:
                     self.grid[col][row][0].kill()
                     self.grid[col][row].pop(0)
                 else:
-                    random_num = random.randint(0, 1000000)
+                    random_num = random.randint(0, 100000)
                     if not self.grid[col][row] and self.soil_layer.grid[col][row][0].state == SoilStates.NORMAL and random_num == 69:
                         self.grid[col][row].append(Seed(self.soil_layer.grid[col][row][0], self.all_sprites))
 
