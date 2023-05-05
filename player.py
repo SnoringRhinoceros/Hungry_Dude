@@ -24,7 +24,8 @@ class Player(pygame.sprite.Sprite):
         self.speed = PLAYER_SPEED
         self.feet_pos = self.pos[0], self.pos[1] + (self.rect.height//2)-28
         self.surrounding_tiles = []
-        self.hunger_level = 5
+        self.hunger_level = 4
+        # 5
 
         self.tools = ['hoe', 'water', 'seeds', 'wheat']
         self.tool_num = [None, None, 0, 0]
@@ -66,19 +67,25 @@ class Player(pygame.sprite.Sprite):
                         if self.soil_layer.grid[collided_tile_index[0]][collided_tile_index[1]][0].state == SoilStates.WATERED:
                             self.plant_layer.plant((collided_tile_index[0], collided_tile_index[1]), 'corn')
                             self.tool_num[2] -= 1
+                    elif self.selected_tool == 'wheat':
+                        self.tool_num[3] -= 1
+                        self.hunger_level += 1
 
     def check_selectable(self, collided_tile_pos):
         return (collided_tile_pos[0] + TILE_SIZE > self.mouse.pos[0] > collided_tile_pos[0]) and (
                 collided_tile_pos[1] + TILE_SIZE > self.mouse.pos[1] > collided_tile_pos[1])
+
+    def find_surrounding_tiles(self, collided_tile):
+        self.surrounding_tiles = []
+        for i in SURROUNDING_TILE_INTERVAL:
+            self.surrounding_tiles.append((collided_tile[0] + i[0], collided_tile[1] + i[1]))
 
     def print_tile(self):
         collided_tile = self.soil_layer.tile_collision(self.feet_pos, ShapeTypes.POINT)
         if collided_tile is not None:
             # print('mouse pos: ' + str((int(self.mouse.tile.pos[0]), int(self.mouse.tile.pos[1]))))
             collided_tile = collided_tile[0]
-            self.surrounding_tiles = []
-            for i in SURROUNDING_TILE_INTERVAL:
-                self.surrounding_tiles.append((collided_tile[0]+i[0], collided_tile[1] + i[1]))
+            self.find_surrounding_tiles(collided_tile)
 
             for i in self.surrounding_tiles:
                 if i == (int(self.mouse.tile.pos[0]), int(self.mouse.tile.pos[1])):
@@ -92,7 +99,8 @@ class Player(pygame.sprite.Sprite):
                            'right_hoe': [], 'left_hoe': [], 'up_hoe': [], 'down_hoe': [], 'right_axe': [],
                            'left_axe': [], 'up_axe': [],
                            'down_axe': [], 'right_water': [], 'left_water': [], 'up_water': [], 'down_water': [],
-                           'up_seeds': [], 'down_seeds': [], 'left_seeds': [], 'right_seeds': []}
+                           'up_seeds': [], 'down_seeds': [], 'left_seeds': [], 'right_seeds': [],
+                           'up_wheat': [], 'down_wheat': [], 'left_wheat': [], 'right_wheat': []}
         for animation in self.animations.keys():
             full_path = 'graphics/character/' + animation
             self.animations[animation] = import_folder(full_path)
@@ -145,7 +153,7 @@ class Player(pygame.sprite.Sprite):
         if self.timers['tool_use'].active:
             self.status = self.status.split('_')[0] + '_' + self.selected_tool
 
-    def check_collision(self):
+    def check_seed_collision(self):
         collided_tile = self.soil_layer.tile_collision(self.feet_pos, ShapeTypes.POINT)[0]
         collided_tile = collided_tile[0] // TILE_SIZE, collided_tile[1] // TILE_SIZE
         if collided_tile is not None:
@@ -193,7 +201,7 @@ class Player(pygame.sprite.Sprite):
     def update(self, dt):
         self.input()
         self.get_status()
-        self.check_collision()
+        self.check_seed_collision()
         self.update_timers()
         self.move(dt)
         self.animate(dt)

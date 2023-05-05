@@ -30,7 +30,7 @@ class Level:
         self.inventory = Inventory(self.player.selected_tool)
         self.hunger_bar = HungerBar()
         self.global_timer = GlobalTimer(GLOBAL_TIMER_POS)
-        self.natural_disasters = [Tornado(TORNADO_IMAGE, self.all_sprites, TORNADO_SPEED)]
+        self.natural_disasters = [Tornado((0, 0), TORNADO_IMAGE, self.all_sprites, TORNADO_SPEED)]
 
     def run(self, dt):
         if not self.check_end_con():
@@ -51,8 +51,16 @@ class Level:
     def check_end_con(self):
         if self.player.game_over:
             return True
-        else:
-            return False
+        player_tile = self.soil_layer.tile_collision(self.player.feet_pos, ShapeTypes.POINT)[0]
+        self.player.find_surrounding_tiles(player_tile)
+        player_collided_tiles = self.player.surrounding_tiles
+        for i in self.natural_disasters:
+            natural_disaster_collided_tile = self.soil_layer.tile_collision(i, ShapeTypes.RECT)
+            if natural_disaster_collided_tile is not None:
+                natural_disaster_collided_tile = natural_disaster_collided_tile[0]
+                if natural_disaster_collided_tile in player_collided_tiles or natural_disaster_collided_tile == player_tile:
+                    return True
+        return False
 
 
 class CameraGroup(pygame.sprite.Group):
