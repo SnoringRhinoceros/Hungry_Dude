@@ -2,11 +2,12 @@ import pygame
 
 
 class Timer:
-    def __init__(self, duration, func=None):
+    def __init__(self, duration, func=None, argument=None):
         self.duration = duration
         self.func = func
         self.start_time = 0
         self.active = False
+        self.argument = argument
 
     def activate(self):
         self.active = True
@@ -21,4 +22,7 @@ class Timer:
         if self.active and current_time - self.start_time >= self.duration:
             self.deactivate()
             if self.func:
-                self.func()
+                if self.argument:
+                    self.func(self.argument)
+                else:
+                    self.func()

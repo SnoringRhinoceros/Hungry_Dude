@@ -17,6 +17,7 @@ class Player(pygame.sprite.Sprite):
         self.frame_index = 0
         self.image = self.animations[self.status][self.frame_index]
         self.rect = self.image.get_rect(center=pos)
+        self.hitbox = PLAYER_HITBOX.get_rect(center=pos)
         self.camera_offset = camera_offset
 
         self.direction = pygame.math.Vector2()
@@ -24,8 +25,7 @@ class Player(pygame.sprite.Sprite):
         self.speed = PLAYER_SPEED
         self.feet_pos = self.pos[0], self.pos[1] + (self.rect.height//2)-28
         self.surrounding_tiles = []
-        self.hunger_level = 4
-        # 5
+        self.hunger_level = 5
 
         self.tools = ['hoe', 'water', 'seeds', 'wheat']
         self.tool_num = [None, None, 0, 0]
@@ -68,8 +68,9 @@ class Player(pygame.sprite.Sprite):
                             self.plant_layer.plant((collided_tile_index[0], collided_tile_index[1]), 'corn')
                             self.tool_num[2] -= 1
                     elif self.selected_tool == 'wheat':
-                        self.tool_num[3] -= 1
-                        self.hunger_level += 1
+                        if self.hunger_level < 5:
+                            self.tool_num[3] -= 1
+                            self.hunger_level += 1
 
     def check_selectable(self, collided_tile_pos):
         return (collided_tile_pos[0] + TILE_SIZE > self.mouse.pos[0] > collided_tile_pos[0]) and (
@@ -153,14 +154,22 @@ class Player(pygame.sprite.Sprite):
         if self.timers['tool_use'].active:
             self.status = self.status.split('_')[0] + '_' + self.selected_tool
 
-    def check_seed_collision(self):
+    def check_seed_collision(self, collided_tile):
+        if self.plant_layer.grid[collided_tile[0]][collided_tile[1]][0].object_type == ObjectTypes.SEED:
+            self.tool_num[2] += 1
+            self.plant_layer.grid[collided_tile[0]][collided_tile[1]][0].mark_for_deletion()
+
+    def check_plant_collision(self, collided_tile):
+        if self.plant_layer.grid[collided_tile[0]][collided_tile[1]][0].object_type == ObjectTypes.PLANT and self.plant_layer.grid[collided_tile[0]][collided_tile[1]][0].state == CornStates.ADULT:
+            self.tool_num[3] += 1
+            self.plant_layer.grid[collided_tile[0]][collided_tile[1]][0].marked_for_deletion = True
+
+    def check_all_collisions(self):
         collided_tile = self.soil_layer.tile_collision(self.feet_pos, ShapeTypes.POINT)[0]
         collided_tile = collided_tile[0] // TILE_SIZE, collided_tile[1] // TILE_SIZE
-        if collided_tile is not None:
-            if self.plant_layer.grid[collided_tile[0]][collided_tile[1]]:
-                if self.plant_layer.grid[collided_tile[0]][collided_tile[1]][0].object_type == ObjectTypes.SEED:
-                    self.tool_num[2] += 1
-                    self.plant_layer.grid[collided_tile[0]][collided_tile[1]][0].mark_for_deletion()
+        if collided_tile is not None and self.plant_layer.grid[collided_tile[0]][collided_tile[1]]:
+            self.check_seed_collision(collided_tile)
+            self.check_plant_collision(collided_tile)
 
     def hunger_bar_tick(self):
         if self.hunger_level >= 1:
@@ -194,14 +203,15 @@ class Player(pygame.sprite.Sprite):
 
         self.rect.centerx = self.pos.x
         self.rect.centery = self.pos.y
+        self.hitbox.centerx = self.pos.x
+        self.hitbox.centery = self.pos.y
 
         self.feet_pos = self.pos[0], self.pos[1] + (self.rect.height//2)-28
-        # print((self.rect.centerx, self.rect.centery))
 
     def update(self, dt):
         self.input()
         self.get_status()
-        self.check_seed_collision()
+        self.check_all_collisions()
         self.update_timers()
         self.move(dt)
         self.animate(dt)

@@ -20,6 +20,7 @@ class Level:
         self.inventory = None
         self.hunger_bar = None
         self.global_timer = None
+        self.natural_disaster_spawner = None
         self.natural_disasters = None
 
     def setup(self):
@@ -31,6 +32,7 @@ class Level:
         self.hunger_bar = HungerBar()
         self.global_timer = GlobalTimer(GLOBAL_TIMER_POS)
         self.natural_disasters = [Tornado((0, 0), TORNADO_IMAGE, self.all_sprites, TORNADO_SPEED)]
+        self.natural_disaster_spawner = NaturalDisasterSpawner(self.natural_disasters, self.all_sprites)
 
     def run(self, dt):
         if not self.check_end_con():
@@ -45,21 +47,19 @@ class Level:
             self.player.mouse.update(self.all_sprites.offset)
             self.global_timer.update(dt)
             self.global_timer.draw(self.display_surface)
+            self.natural_disaster_spawner.update()
         else:
             self.display_surface.blit(END_SCREEN_IMAGE, END_SCREEN_IMAGE.get_rect())
 
     def check_end_con(self):
         if self.player.game_over:
             return True
+        # Natural disaster collision
         player_tile = self.soil_layer.tile_collision(self.player.feet_pos, ShapeTypes.POINT)[0]
-        self.player.find_surrounding_tiles(player_tile)
         player_collided_tiles = self.player.surrounding_tiles
-        for i in self.natural_disasters:
-            natural_disaster_collided_tile = self.soil_layer.tile_collision(i, ShapeTypes.RECT)
-            if natural_disaster_collided_tile is not None:
-                natural_disaster_collided_tile = natural_disaster_collided_tile[0]
-                if natural_disaster_collided_tile in player_collided_tiles or natural_disaster_collided_tile == player_tile:
-                    return True
+        for disaster in self.natural_disasters:
+            if pygame.Rect.colliderect(self.player.hitbox, disaster.rect):
+                return True
         return False
 
 
@@ -72,10 +72,11 @@ class CameraGroup(pygame.sprite.Group):
     def custom_draw(self, player):
         self.offset.x = player.rect.centerx - SCREEN_WIDTH / 2
         self.offset.y = player.rect.centery - SCREEN_HEIGHT / 2
-        # print(self.offset.x, self.offset.y)
         for sprite in self.sprites():
             offset_rect = sprite.rect.copy()
             offset_rect.center -= self.offset
             self.display_surface.blit(sprite.image, offset_rect)
-        # pygame.draw.rect(self.display_surface, (255, 0, 0), player.hitbox)
+        # offset_rect = player.hitbox.copy()
+        # offset_rect.center -= self.offset
+        # self.display_surface.blit(PLAYER_HITBOX, offset_rect)
 

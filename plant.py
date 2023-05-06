@@ -81,7 +81,7 @@ class Seed(Generic):
         self.marked_for_deletion = False
         self.soil_tile = soil_tile
         self.pos = self.soil_tile.pos
-        print('a seed spawned at', self.pos)
+        # print('a seed spawned at', self.pos)
         self.image = SEED_IMAGE
         self.rect = self.image.get_rect(topleft=self.pos)
         self.timer = Timer(SEED_DEATH_TIME, self.mark_for_deletion)

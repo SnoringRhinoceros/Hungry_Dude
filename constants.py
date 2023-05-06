@@ -3,13 +3,13 @@ from enum import Enum
 import pygame
 from pathlib import Path
 import os
+import random
 
 BLACK = (0, 0, 0)
 
 PLAYER_SPAWN_LOC = (640, 360)
 PLAYER_SPEED = 400
-PLAYER_HITBOX_X = 0.6
-PLAYER_HITBOX_Y = 0.9
+PLAYER_HITBOX = pygame.image.load(Path('graphics/character/hitbox/hitbox.png'))
 
 TILE_SIZE = 64
 SURROUNDING_TILE_INTERVAL = [(-TILE_SIZE, 0), (TILE_SIZE, 0), (0, TILE_SIZE), (0, -TILE_SIZE)]
@@ -52,6 +52,8 @@ PLANT_IMAGES = [pygame.image.load(Path('graphics/crops/corn/' + f)) for f in os.
 PLANT_GROW_SPEED = 5000
 SEED_IMAGE = pygame.image.load(Path('graphics/objects/seeds.png'))
 SEED_DEATH_TIME = 10000
+
+NATURAL_DISASTER_SPAWN_TIMES = {'tornado': (500, 10000), 'earthquake': (500, 10000)}
 
 TORNADO_SPEED = 100
 TORNADO_IMAGE = pygame.image.load(Path('graphics/natural_disasters/tornado/0.png'))
