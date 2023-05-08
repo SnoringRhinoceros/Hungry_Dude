@@ -31,7 +31,7 @@ class Level:
         self.inventory = Inventory(self.player.selected_tool)
         self.hunger_bar = HungerBar()
         self.global_timer = GlobalTimer(GLOBAL_TIMER_POS)
-        self.natural_disasters = [Tornado((0, 0), TORNADO_IMAGE, self.all_sprites, TORNADO_SPEED)]
+        self.natural_disasters = []
         self.natural_disaster_spawner = NaturalDisasterSpawner(self.natural_disasters, self.all_sprites)
 
     def run(self, dt):

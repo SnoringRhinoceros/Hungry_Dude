@@ -12,6 +12,7 @@ class NaturalDisaster(Generic):
         self.direction = pygame.math.Vector2()
         self.find_original_direction()
         self.speed = speed
+        self.marked_for_deletion = False
         Generic.__init__(self, pos=self.pos, surface=self.image, groups=self.all_sprites)
 
     def find_original_direction(self):
@@ -24,8 +25,6 @@ class NaturalDisaster(Generic):
             self.direction.x = 1
         elif self.pos[0] >= GROUND.get_width():
             self.direction.x = -1
-        if self.direction.magnitude() > 0:
-            self.direction = self.direction.normalize()
 
     def move(self, dt):
         self.pos = (self.pos[0] + self.direction.x * self.speed * dt, self.pos[1] + self.direction.y * self.speed * dt)
@@ -67,11 +66,24 @@ class NaturalDisasterSpawner:
     def update(self):
         for timer in self.timers.values():
             timer.update()
+        indexes_to_kill = []
+        for disaster in range(len(self.natural_disasters)):
+            if self.natural_disasters[disaster].marked_for_deletion:
+                indexes_to_kill.append(disaster)
+        indexes_to_kill = sorted(indexes_to_kill, reverse=True)
+        for i in indexes_to_kill:
+            if i < len(self.natural_disasters):
+                self.natural_disasters.pop(i)
 
 
 class Tornado(NaturalDisaster):
     def __init__(self, pos, image, group, speed):
         NaturalDisaster.__init__(self, pos=pos, image=image, group=group, speed=speed)
 
+    def check_offscreen(self):
+        if ((self.direction.x == 1 and self.pos[0] > GROUND.get_width()) or (self.direction.x == -1 and self.pos[0] < 0) or self.direction.x == 0) and ((self.direction.y == 1 and self.pos[1] > GROUND.get_height()) or (self.direction.y == -1 and self.pos[1] < 0) or self.direction.y == 0):
+            self.marked_for_deletion = True
+
     def update(self, dt):
+        self.check_offscreen()
         self.move(dt)

@@ -20,8 +20,20 @@ class Button:
             'pressed': '#example_color'
         }
         self.on_click_func = on_click_func
+        self.pressed = False
 
-# system_bold.tff
+    def draw(self):
+        self.surface.blit(self.text_surface, self.rect)
 
     def update(self):
-        self.surface.blit(self.text_surface, self.rect)
+        if self.rect.collidepoint(pygame.mouse.get_pos()):
+            if pygame.mouse.get_pressed(num_buttons=3)[0]:
+                self.text_surface.fill(self.colors['pressed'])
+                self.pressed = True
+                self.on_click_func()
+            else:
+                self.text_surface.fill(self.colors['hovered'])
+        else:
+            self.text_surface.fill(self.colors['normal'])
+        if not self.pressed:
+            self.draw()

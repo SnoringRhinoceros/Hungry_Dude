@@ -2,18 +2,15 @@ import pygame
 from constants import *
 from natural_disaster import NaturalDisaster
 
-EARTHQUAKE_SURROUNDING_INTERVAL = [(0, 0), (-TILE_SIZE, 0), (TILE_SIZE, 0), (0, TILE_SIZE), (0, -TILE_SIZE), (-TILE_SIZE, -TILE_SIZE), (TILE_SIZE, TILE_SIZE)]
-EARTHQUAKE_ANIMATIONS = [pygame.image.load(Path('graphics/natural_disasters/earthquake' + f)) for f in os.listdir(Path('graphics/natural_disasters/earthquake')) if not f == 'Thumbs.db']
-
 
 class Earthquake(NaturalDisaster):
-    def __init__(self, tile, soil_layer, plant_layer, image, group):
-        self.middle_tile = tile
+    def __init__(self, middle_tile, soil_layer, plant_layer, image, group):
+        self.middle_tile = middle_tile
         self.marked_for_deletion = False
         self.soil_layer = soil_layer
         self.plant_layer = plant_layer
         self.all_tiles = self.find_all_tiles()
-        NaturalDisaster.__init__(self, image=image, group=group, speed=0)
+        NaturalDisaster.__init__(self, pos=self.all_tiles[7], image=image, group=group, speed=0)
         self.frame_index = 0
         self.image = EARTHQUAKE_ANIMATIONS[self.frame_index]
         self.destroy()

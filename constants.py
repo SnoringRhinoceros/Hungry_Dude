@@ -58,6 +58,10 @@ NATURAL_DISASTER_SPAWN_TIMES = {'tornado': (500, 10000), 'earthquake': (500, 100
 TORNADO_SPEED = 100
 TORNADO_IMAGE = pygame.image.load(Path('graphics/natural_disasters/tornado/0.png'))
 
+EARTHQUAKE_SURROUNDING_INTERVAL = [(0, 0), (-TILE_SIZE, 0), (TILE_SIZE, 0), (0, TILE_SIZE), (0, -TILE_SIZE), (-TILE_SIZE, -TILE_SIZE), (TILE_SIZE, TILE_SIZE), (-TILE_SIZE, TILE_SIZE), (TILE_SIZE, -TILE_SIZE)]
+EARTHQUAKE_ANIMATIONS = [pygame.image.load(Path('graphics/natural_disasters/earthquake/' + f)) for f in os.listdir(Path('graphics/natural_disasters/earthquake')) if not f == 'Thumbs.db']
+
+
 END_SCREEN_IMAGE = pygame.image.load(Path('graphics/end_screen/end_screen.png'))
 
 
