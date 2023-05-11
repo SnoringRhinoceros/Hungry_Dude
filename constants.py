@@ -62,7 +62,7 @@ EARTHQUAKE_SURROUNDING_INTERVAL = [(0, 0), (-TILE_SIZE, 0), (TILE_SIZE, 0), (0, 
 EARTHQUAKE_ANIMATIONS = [pygame.image.load(Path('graphics/natural_disasters/earthquake/' + f)) for f in os.listdir(Path('graphics/natural_disasters/earthquake')) if not f == 'Thumbs.db']
 
 
-END_SCREEN_IMAGE = pygame.image.load(Path('graphics/end_screen/end_screen.png'))
+END_SCREEN_IMAGE = pygame.image.load(Path('graphics/screens/end_screen/end_screen.png'))
 
 
 class ObjectTypes(Enum):
