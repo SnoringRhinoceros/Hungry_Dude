@@ -31,7 +31,7 @@ class Level:
         self.inventory = Inventory(self.player.selected_tool)
         self.hunger_bar = HungerBar()
         self.global_timer = GlobalTimer(GLOBAL_TIMER_POS)
-        self.natural_disasters = []
+        self.natural_disasters = [Earthquake(self.soil_layer.grid[1][1][0], self.soil_layer, self.plant_layer, self.all_sprites)]
         self.natural_disaster_spawner = NaturalDisasterSpawner(self.natural_disasters, self.all_sprites)
 
     def run(self, dt):

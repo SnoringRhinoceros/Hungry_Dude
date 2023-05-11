@@ -87,3 +87,40 @@ class Tornado(NaturalDisaster):
     def update(self, dt):
         self.check_offscreen()
         self.move(dt)
+
+
+class Earthquake(NaturalDisaster):
+    def __init__(self, middle_tile, soil_layer, plant_layer, group):
+        self.middle_tile = middle_tile
+        self.marked_for_deletion = False
+        self.soil_layer = soil_layer
+        self.plant_layer = plant_layer
+        self.all_tiles = self.find_all_tiles()
+        self.frame_index = 0
+        self.image = EARTHQUAKE_ANIMATIONS[self.frame_index]
+        NaturalDisaster.__init__(self, pos=(self.all_tiles[5][0]*TILE_SIZE, self.all_tiles[5][1]*TILE_SIZE), image=self.image, group=group, speed=0)
+        self.destroy()
+
+    def find_all_tiles(self):
+        middle_collided_tile = self.soil_layer.tile_collision(self.middle_tile.pos, ShapeTypes.POINT)[0]
+        return [(int((middle_collided_tile[0]+i[0])/TILE_SIZE), int((middle_collided_tile[1]+i[1])/TILE_SIZE)) for i in EARTHQUAKE_SURROUNDING_INTERVAL]
+
+    def animate(self, dt):
+        self.frame_index += 0.5*dt
+        if self.frame_index <= len(EARTHQUAKE_ANIMATIONS):
+            self.image = EARTHQUAKE_ANIMATIONS[int(self.frame_index)]
+            self.rect = self.image.get_rect(topleft=self.pos)
+        else:
+            self.marked_for_deletion = True
+
+    def destroy(self):
+        for i in self.all_tiles:
+            if self.plant_layer.grid[i[0]][i[1]]:
+                self.plant_layer.grid[i[0]][i[1]].marked_for_deletion = True
+            if self.soil_layer.grid[i[0]][i[1]][0]:
+                self.soil_layer.grid[i[0]][i[1]][0].state = SoilStates.NORMAL
+
+    def update(self, dt):
+        self.animate(dt)
+        if self.marked_for_deletion:
+            self.kill()
