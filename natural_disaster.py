@@ -5,7 +5,8 @@ import random
 
 
 class NaturalDisaster(Generic):
-    def __init__(self, pos, image, group, speed):
+    def __init__(self, pos, image, group, speed, name):
+        self.name = name
         self.pos = pos
         self.image = image
         self.all_sprites = group
@@ -32,13 +33,13 @@ class NaturalDisaster(Generic):
         self.rect.x = self.pos[0]
         self.rect.y = self.pos[1]
 
-    # Make sure to make an if off-screen method
-
 
 class NaturalDisasterSpawner:
-    def __init__(self, natural_disasters, all_sprites):
+    def __init__(self, natural_disasters, all_sprites, soil_layer, plant_layer):
         self.natural_disasters = natural_disasters
         self.all_sprites = all_sprites
+        self.soil_layer = soil_layer
+        self.plant_layer = plant_layer
         self.tornado_timer = Timer(random.randint(NATURAL_DISASTER_SPAWN_TIMES['tornado'][0], NATURAL_DISASTER_SPAWN_TIMES['tornado'][1]), self.spawn, 'tornado')
         self.earthquake_timer = Timer(random.randint(NATURAL_DISASTER_SPAWN_TIMES['earthquake'][0], NATURAL_DISASTER_SPAWN_TIMES['earthquake'][1]), self.spawn, 'earthquake')
         self.timers = {'tornado': self.tornado_timer, 'earthquake': self.earthquake_timer}
@@ -50,13 +51,22 @@ class NaturalDisasterSpawner:
             all_sides = ['up', 'right', 'down', 'left']
             chosen_side = random.choice(all_sides)
             if chosen_side == 'up':
-                self.natural_disasters.append(Tornado((random.randrange(0, GROUND.get_width(), 64), -TILE_SIZE), TORNADO_IMAGE, self.all_sprites, TORNADO_SPEED))
+                self.natural_disasters.append(Tornado((random.randrange(0, GROUND.get_width(), 64), -TILE_SIZE), TORNADO_IMAGE, self.all_sprites, TORNADO_SPEED, self.soil_layer, self.plant_layer))
             elif chosen_side == 'right':
-                self.natural_disasters.append(Tornado((GROUND.get_width()+TILE_SIZE, random.randrange(0, GROUND.get_height(), 64)), TORNADO_IMAGE, self.all_sprites, TORNADO_SPEED))
+                self.natural_disasters.append(Tornado((GROUND.get_width()+TILE_SIZE, random.randrange(0, GROUND.get_height(), 64)), TORNADO_IMAGE, self.all_sprites, TORNADO_SPEED, self.soil_layer, self.plant_layer))
             elif chosen_side == 'down':
-                self.natural_disasters.append(Tornado((random.randrange(0, GROUND.get_width(), 64), GROUND.get_height()+TILE_SIZE), TORNADO_IMAGE, self.all_sprites, TORNADO_SPEED))
+                self.natural_disasters.append(Tornado((random.randrange(0, GROUND.get_width(), 64), GROUND.get_height()+TILE_SIZE), TORNADO_IMAGE, self.all_sprites, TORNADO_SPEED, self.soil_layer, self.plant_layer))
             elif chosen_side == 'left':
-                self.natural_disasters.append(Tornado((-TILE_SIZE, random.randrange(0, GROUND.get_height(), 64)), TORNADO_IMAGE, self.all_sprites, TORNADO_SPEED))
+                self.natural_disasters.append(Tornado((-TILE_SIZE, random.randrange(0, GROUND.get_height(), 64)), TORNADO_IMAGE, self.all_sprites, TORNADO_SPEED, self.soil_layer, self.plant_layer))
+        if disaster == 'earthquake':
+            random_x = random.randint(1, (GROUND.get_width() // TILE_SIZE) - 2)
+            random_y = random.randint(1, (GROUND.get_height() // TILE_SIZE) - 2)
+            same_location = False
+            for i in self.natural_disasters:
+                if i.name == 'Earthquake' and i.middle_tile == self.soil_layer.grid[random_x][random_y][0]:
+                    same_location = True
+            if not same_location:
+                self.natural_disasters.append(Earthquake(self.soil_layer.grid[random_x][random_y][0], self.soil_layer, self.plant_layer, self.all_sprites, ))
 
     def spawn(self, disaster):
         self.timers[disaster] = Timer(random.randint(NATURAL_DISASTER_SPAWN_TIMES[disaster][0], NATURAL_DISASTER_SPAWN_TIMES[disaster][0]), self.spawn, disaster)
@@ -77,15 +87,28 @@ class NaturalDisasterSpawner:
 
 
 class Tornado(NaturalDisaster):
-    def __init__(self, pos, image, group, speed):
-        NaturalDisaster.__init__(self, pos=pos, image=image, group=group, speed=speed)
+    def __init__(self, pos, image, group, speed, soil_layer, plant_layer):
+        self.soil_layer = soil_layer
+        self.plant_layer = plant_layer
+        NaturalDisaster.__init__(self, pos=pos, image=image, group=group, speed=speed, name='Tornado')
 
     def check_offscreen(self):
         if ((self.direction.x == 1 and self.pos[0] > GROUND.get_width()) or (self.direction.x == -1 and self.pos[0] < 0) or self.direction.x == 0) and ((self.direction.y == 1 and self.pos[1] > GROUND.get_height()) or (self.direction.y == -1 and self.pos[1] < 0) or self.direction.y == 0):
             self.marked_for_deletion = True
 
+    def destroy(self):
+        collided_tile_poses = self.soil_layer.tile_collision(self.rect, ShapeTypes.RECT)
+        if collided_tile_poses:
+            collided_tile_indexes = [(i[0] // TILE_SIZE, i[1] // TILE_SIZE) for i in collided_tile_poses]
+            for i in collided_tile_indexes:
+                if self.plant_layer.grid[i[0]][i[1]]:
+                    self.plant_layer.grid[i[0]][i[1]][0].marked_for_deletion = True
+                if self.soil_layer.grid[i[0]][i[1]][0]:
+                    self.soil_layer.grid[i[0]][i[1]][0].state = SoilStates.NORMAL
+
     def update(self, dt):
         self.check_offscreen()
+        self.destroy()
         self.move(dt)
 
 
@@ -98,25 +121,26 @@ class Earthquake(NaturalDisaster):
         self.all_tiles = self.find_all_tiles()
         self.frame_index = 0
         self.image = EARTHQUAKE_ANIMATIONS[self.frame_index]
-        NaturalDisaster.__init__(self, pos=(self.all_tiles[5][0]*TILE_SIZE, self.all_tiles[5][1]*TILE_SIZE), image=self.image, group=group, speed=0)
-        self.destroy()
+        NaturalDisaster.__init__(self, pos=(self.all_tiles[5][0]*TILE_SIZE, self.all_tiles[5][1]*TILE_SIZE), image=self.image, group=group, speed=0, name='Earthquake')
 
     def find_all_tiles(self):
         middle_collided_tile = self.soil_layer.tile_collision(self.middle_tile.pos, ShapeTypes.POINT)[0]
         return [(int((middle_collided_tile[0]+i[0])/TILE_SIZE), int((middle_collided_tile[1]+i[1])/TILE_SIZE)) for i in EARTHQUAKE_SURROUNDING_INTERVAL]
 
     def animate(self, dt):
-        self.frame_index += 0.5*dt
-        if self.frame_index <= len(EARTHQUAKE_ANIMATIONS):
+        self.frame_index += 1*dt
+        if self.frame_index < len(EARTHQUAKE_ANIMATIONS):
             self.image = EARTHQUAKE_ANIMATIONS[int(self.frame_index)]
             self.rect = self.image.get_rect(topleft=self.pos)
         else:
             self.marked_for_deletion = True
+            self.destroy()
 
     def destroy(self):
         for i in self.all_tiles:
+            # print((i[0], i[1]))
             if self.plant_layer.grid[i[0]][i[1]]:
-                self.plant_layer.grid[i[0]][i[1]].marked_for_deletion = True
+                self.plant_layer.grid[i[0]][i[1]][0].marked_for_deletion = True
             if self.soil_layer.grid[i[0]][i[1]][0]:
                 self.soil_layer.grid[i[0]][i[1]][0].state = SoilStates.NORMAL
 

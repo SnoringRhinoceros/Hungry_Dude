@@ -13,7 +13,7 @@ from natural_disaster import *
 class Level:
     def __init__(self):
         self.display_surface = pygame.display.get_surface()
-        self.all_sprites = CameraGroup()
+        self.all_sprites = None
         self.soil_layer = None
         self.plant_layer = None
         self.player = None
@@ -23,7 +23,11 @@ class Level:
         self.natural_disaster_spawner = None
         self.natural_disasters = None
 
+    def start(self):
+        pass
+
     def setup(self):
+        self.all_sprites = CameraGroup()
         Generic(pos=(0, 0), surface=GROUND, groups=self.all_sprites)
         self.soil_layer = SoilLayer(self.all_sprites)
         self.plant_layer = PlantLayer(self.all_sprites, self.soil_layer)
@@ -31,8 +35,8 @@ class Level:
         self.inventory = Inventory(self.player.selected_tool)
         self.hunger_bar = HungerBar()
         self.global_timer = GlobalTimer(GLOBAL_TIMER_POS)
-        self.natural_disasters = [Earthquake(self.soil_layer.grid[1][1][0], self.soil_layer, self.plant_layer, self.all_sprites)]
-        self.natural_disaster_spawner = NaturalDisasterSpawner(self.natural_disasters, self.all_sprites)
+        self.natural_disasters = []
+        self.natural_disaster_spawner = NaturalDisasterSpawner(self.natural_disasters, self.all_sprites, self.soil_layer, self.plant_layer)
 
     def run(self, dt):
         if not self.check_end_con():
