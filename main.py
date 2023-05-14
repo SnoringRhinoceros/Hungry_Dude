@@ -20,7 +20,7 @@ class Game:
         pygame.display.set_caption("Hungry Dude")
         self.clock = pygame.time.Clock()
         self.level = Level()
-        self.level.setup()
+        self.level.start_setup()
 
 
 def main():
@@ -30,9 +30,13 @@ def main():
             if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
                 pygame.quit()
                 sys.exit()
-
-        dt = game.clock.tick() / 1000
-        game.level.run(dt)
+        if not game.level.screen_manager.state == ScreenStates.START:
+            game.level.start()
+        else:
+            if not game.level.setted_up:
+                game.level.setup()
+            dt = game.clock.tick() / 1000
+            game.level.run(dt)
         pygame.display.update()
 
 

@@ -1,6 +1,7 @@
 
 import pygame
 from constants import *
+from screen import ScreenManager
 from player import Player
 from sprites import Generic
 from soil import SoilLayer
@@ -12,7 +13,10 @@ from natural_disaster import *
 
 class Level:
     def __init__(self):
+        self.setted_up = False
         self.display_surface = pygame.display.get_surface()
+        self.started = False
+        self.screen_manager = None
         self.all_sprites = None
         self.soil_layer = None
         self.plant_layer = None
@@ -23,8 +27,11 @@ class Level:
         self.natural_disaster_spawner = None
         self.natural_disasters = None
 
+    def start_setup(self):
+        self.screen_manager = ScreenManager(self.display_surface)
+
     def start(self):
-        pass
+        self.screen_manager.update()
 
     def setup(self):
         self.all_sprites = CameraGroup()
@@ -37,6 +44,7 @@ class Level:
         self.global_timer = GlobalTimer(GLOBAL_TIMER_POS)
         self.natural_disasters = []
         self.natural_disaster_spawner = NaturalDisasterSpawner(self.natural_disasters, self.all_sprites, self.soil_layer, self.plant_layer)
+        self.setted_up = True
 
     def run(self, dt):
         if not self.check_end_con():
@@ -54,6 +62,8 @@ class Level:
             self.natural_disaster_spawner.update()
         else:
             self.display_surface.blit(END_SCREEN_IMAGE, END_SCREEN_IMAGE.get_rect())
+            self.global_timer.rect.x, self.global_timer.rect.y = 325, 209
+            self.display_surface.blit(self.global_timer.image, self.global_timer.rect)
 
     def check_end_con(self):
         if self.player.game_over:

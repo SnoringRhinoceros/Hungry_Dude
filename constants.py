@@ -1,9 +1,7 @@
-from enum import IntEnum
 from enum import Enum
 import pygame
 from pathlib import Path
 import os
-import random
 
 BLACK = (0, 0, 0)
 
@@ -61,8 +59,15 @@ TORNADO_IMAGE = pygame.image.load(Path('graphics/natural_disasters/tornado/0.png
 EARTHQUAKE_SURROUNDING_INTERVAL = [(0, 0), (-TILE_SIZE, 0), (TILE_SIZE, 0), (0, TILE_SIZE), (0, -TILE_SIZE), (-TILE_SIZE, -TILE_SIZE), (TILE_SIZE, TILE_SIZE), (-TILE_SIZE, TILE_SIZE), (TILE_SIZE, -TILE_SIZE)]
 EARTHQUAKE_ANIMATIONS = [pygame.image.load(Path('graphics/natural_disasters/earthquake/' + f)) for f in os.listdir(Path('graphics/natural_disasters/earthquake')) if not f == 'Thumbs.db']
 
-
+START_SCREEN_IMAGE = pygame.image.load(Path('graphics/screens/normal_screen/normal.png'))
+TUTORIAL_SCREEN_IMAGE = pygame.image.load(Path('graphics/screens/tutorial_screen/tutorial.png'))
 END_SCREEN_IMAGE = pygame.image.load(Path('graphics/screens/end_screen/end_screen.png'))
+
+
+class ScreenStates(Enum):
+    START = 1
+    TUTORIAL = 2
+    NORMAL = 3
 
 
 class ObjectTypes(Enum):
